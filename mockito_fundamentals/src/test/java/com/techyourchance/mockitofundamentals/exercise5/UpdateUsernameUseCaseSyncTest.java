@@ -1,6 +1,5 @@
 package com.techyourchance.mockitofundamentals.exercise5;
 
-import com.techyourchance.mockitofundamentals.example7.eventbus.LoggedInEvent;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.EventBusPoster;
 import com.techyourchance.mockitofundamentals.exercise5.eventbus.UserDetailsChangedEvent;
 import com.techyourchance.mockitofundamentals.exercise5.networking.NetworkErrorException;
@@ -8,29 +7,34 @@ import com.techyourchance.mockitofundamentals.exercise5.networking.UpdateUsernam
 import com.techyourchance.mockitofundamentals.exercise5.users.User;
 import com.techyourchance.mockitofundamentals.exercise5.users.UsersCache;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UpdateUsernameUseCaseSyncTest {
 
     UpdateUsernameUseCaseSync SUT;
+    @Mock
     UpdateUsernameHttpEndpointSync updateUsernameHttpEndpointSyncMock;
+    @Mock
     UsersCache usersCacheMock;
+    @Mock
     EventBusPoster eventBusPosterMock;
 
     public static final String USERID = "userid";
@@ -38,9 +42,6 @@ public class UpdateUsernameUseCaseSyncTest {
 
     @Before
     public void setUp() throws NetworkErrorException {
-        updateUsernameHttpEndpointSyncMock = Mockito.mock(UpdateUsernameHttpEndpointSync.class);
-        usersCacheMock = Mockito.mock(UsersCache.class);
-        eventBusPosterMock = Mockito.mock(EventBusPoster.class);
         SUT = new UpdateUsernameUseCaseSync(updateUsernameHttpEndpointSyncMock, usersCacheMock,
                 eventBusPosterMock);
     }
@@ -89,7 +90,6 @@ public class UpdateUsernameUseCaseSyncTest {
         verify(eventBusPosterMock).postEvent(argumentCaptor.capture());
         Assert.assertThat(argumentCaptor.getValue(), is(instanceOf(UserDetailsChangedEvent.class)));
     }
-
 
 
     private void generalError() throws NetworkErrorException {
